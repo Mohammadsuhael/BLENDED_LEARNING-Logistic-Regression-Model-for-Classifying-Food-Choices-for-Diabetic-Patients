@@ -98,7 +98,6 @@ print(conf_matrix)
 ![image](https://github.com/user-attachments/assets/86f49017-b3c0-4af3-8030-93f32896c5d2)
 ![image](https://github.com/user-attachments/assets/214704e7-2a8b-4462-9b3f-9cf6eee09518)
 
-![simple linear regression model for predicting the marks scored](sam.png)
 
 
 ## Result:
