@@ -35,68 +35,68 @@ RegisterNumber:  212224230164
 */
 
 
+# Import necessary libraries
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, classification_report
 import seaborn as sns
 import matplotlib.pyplot as plt
 
 # Load the dataset
-df = pd.read_csv('food_items.csv')
+df = pd.read_csv("Food_Items.csv")
 
 # Inspect the dataset
 print("Dataset Overview:")
 print(df.head())
-print("\nDataset Info:")
+print("\nDATASET INFO")
 print(df.info())
 
 
-x_raw=df.iloc[:,:-1]
-y_raw=df.iloc[:,-1:]
-x_raw
-scaler = MinMaxScaler() 
-X = scaler.fit_transform(x_raw)
+df['class'] = df['class'].str.strip("'")
+df['Diabetic'] = df['class'].apply(lambda x: 1 if x == 'In Moderation' else 0)
 
-label_encoder = LabelEncoder()
+# Define features and target
+X = df.drop(columns=['class', 'Diabetic'])  # Features
+y = df['Diabetic']                          # Target variable
 
-# Encode the target variable
-y = label_encoder.fit_transform(y_raw.values.ravel())  
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=123)
+# Train the Logistic Regression model
+log_reg = LogisticRegression(max_iter=1000, random_state=42)
+log_reg.fit(X_train, y_train)
 
-penalty = 'l2'
+# Make predictions
+y_pred = log_reg.predict(X_test)
 
-multi_class = 'multinomial'
 
-solver = 'lbfgs'
-
-# Max iteration = 1000
-max_iter = 1000
-
-l2_model = LogisticRegression(random_state=123, penalty=penalty, multi_class=multi_class, solver=solver, max_iter=max_iter)
-
-# Fit the model
-l2_model.fit(X_train, y_train)
-y_pred = l2_model.predict(X_test)
-
-print("\nModel Evaluation:")
+# Evaluate the model
+print("Model Evaluation:")
 print("Accuracy:", accuracy_score(y_test, y_pred))
+print("Precision:", precision_score(y_test, y_pred))
+print("Recall:", recall_score(y_test, y_pred))
+print("F1 Score:", f1_score(y_test, y_pred))
 print("\nClassification Report:")
 print(classification_report(y_test, y_pred))
 
-
+# Confusion Matrix
 conf_matrix = confusion_matrix(y_test, y_pred)
-print(conf_matrix)
+plt.figure(figsize=(8, 6))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues',xticklabels=['Non-Diabetic', 'Diabetic'],yticklabels=['Non-Diabetic', 'Diabetic'])
+plt.title('Confusion Matrix')
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.show()
 ```
 
 ## Output:
+![image](https://github.com/user-attachments/assets/536111de-7bf2-4912-88e6-bdb0f821635d)
+![image](https://github.com/user-attachments/assets/9b438f0f-628e-4194-8482-94aee57cf027)
+![image](https://github.com/user-attachments/assets/b4b608a0-b0b2-4fe1-976c-a31b644e6dc9)
+![image](https://github.com/user-attachments/assets/37bf283d-42f1-4f92-a003-5a555f4f73a8)
 
-![image](https://github.com/user-attachments/assets/5e692a53-4d58-40b1-88f9-82c44e336dcd)
-![image](https://github.com/user-attachments/assets/0e9e6819-8c52-43fb-9369-e559cc96a745)
-![image](https://github.com/user-attachments/assets/86f49017-b3c0-4af3-8030-93f32896c5d2)
-![image](https://github.com/user-attachments/assets/214704e7-2a8b-4462-9b3f-9cf6eee09518)
+
 
 
 
